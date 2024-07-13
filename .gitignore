@@ -2,3 +2,7 @@
 Learn_Playdate.pdx
 build
 compile_commands.json
+.DS_Store
+Source/pdex.dylib
+Source/pdex.elf
+Source/pdex.dylib
