@@ -51,3 +51,9 @@ LDFLAGS += -L$(PLAYDATE_SDK_PATH)/lib
 clean:
 	rm -rf $(PRODUCT) $(SRC:.c=.o) $(UASRC:.s=.o)
 	rm -rf build
+
+# Target to build and package for uploading
+.PHONY: package
+package: $(PRODUCT)
+	@echo "Packaging $(PRODUCT) for upload..."
+	zip -r $(PRODUCT).zip $(PRODUCT)
