@@ -1,0 +1,5 @@
+name=Hello World C
+author=Jack Kitto
+description=A project for learning the playdate the C API
+bundleID=com.app.learncapi
+imagePath=
