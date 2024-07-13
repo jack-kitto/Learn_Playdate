@@ -46,3 +46,8 @@ include $(SDK)/C_API/buildsupport/common.mk
 CFLAGS += -I$(PLAYDATE_SDK_PATH)/C_API
 LDFLAGS += -L$(PLAYDATE_SDK_PATH)/lib
 
+# Target to clean build artifacts
+.PHONY: clean
+clean:
+	rm -rf $(PRODUCT) $(SRC:.c=.o) $(UASRC:.s=.o)
+	rm -rf build
