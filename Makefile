@@ -24,6 +24,7 @@ VPATH += src
 SRC = 	\
         src/main.c \
         src/game.c \
+        src/graphics.c \
 
 # List all user directories here
 UINCDIR = 

@@ -7,5 +7,6 @@
 
 int update(void *userdata);
 int setup(PlaydateAPI *pd);
+LCDBitmap *loadImageAtPath(const char *path, PlaydateAPI *pd);
 
 #endif /* game_h */
