@@ -27,6 +27,8 @@ SRC = 	\
         src/input/input.c \
         src/graphics/graphics.c \
         src/level/level.c \
+        src/camera/camera.c \
+        src/player/player.c \
 
 # List all user directories here
 UINCDIR = 

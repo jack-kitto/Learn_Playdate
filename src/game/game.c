@@ -1,8 +1,5 @@
 // game.c
 #include "game.h"
-#include "pd_api.h"
-#include "src/graphics/graphics.h"
-#include "src/level/level.h"
 #include <stdint.h>
 
 static Game game;
@@ -33,6 +30,8 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.input = initialiseInput(&game);
   game.graphics = initialiseGraphics(&game);
   game.level = initialiseLevel(&game);
+  game.camera = initialiseCamera(&game);
+  game.player = initialisePlayer(&game);
 
   game.setupGame();
   return &game;
