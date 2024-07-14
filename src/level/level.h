@@ -9,7 +9,7 @@ enum TileType { START, END, BLOCK, AIR, UNKNOWN };
 
 typedef struct Level Level;
 struct Level {
-  char (*tilemap)[LEVEL_WIDTH]; // Pointer to array of LEVEL_WIDTH chars
+  char (*tilemap)[LEVEL_WIDTH];
   void (*printLevel)(void);
   void (*drawLevel)(void);
   TileType (*charToTileType)(char tile);
