@@ -26,6 +26,7 @@ SRC = 	\
         src/game/game.c \
         src/input/input.c \
         src/graphics/graphics.c \
+        src/level/level.c \
 
 # List all user directories here
 UINCDIR = 

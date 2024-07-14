@@ -6,6 +6,7 @@
 #include "pd_api.h"
 #include "src/graphics/graphics.h"
 #include "src/input/input.h"
+#include "src/level/level.h"
 
 typedef struct Game Game;
 typedef enum { MENU, ACTIVE } State;
@@ -17,6 +18,7 @@ struct Game {
   PlaydateAPI *pd;
   Input *input;
   Graphics *graphics;
+  Level *level;
 
   int (*update)(void *userdata);
   int (*setupGame)(void);

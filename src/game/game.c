@@ -2,6 +2,7 @@
 #include "game.h"
 #include "pd_api.h"
 #include "src/graphics/graphics.h"
+#include "src/level/level.h"
 #include <stdint.h>
 
 static Game game;
@@ -31,6 +32,7 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.startGame = &startGame;
   game.input = initialiseInput(&game);
   game.graphics = initialiseGraphics(&game);
+  game.level = initialiseLevel(&game);
 
   game.setupGame();
   return &game;
@@ -39,4 +41,5 @@ Game *initialiseGame(PlaydateAPI *pd) {
 void startGame() {
   game.print("Starting game.");
   game.state = ACTIVE;
+  game.level->printLevel();
 }
