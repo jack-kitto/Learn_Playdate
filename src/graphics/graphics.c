@@ -3,6 +3,8 @@
 
 static Game *game;
 static Graphics graphics;
+void drawPatternRect(PlaydateAPI *pd, int x, int y, int width, int height,
+                     LCDPattern *lcdPattern);
 
 LCDBitmap *loadImageAtPath(const char *path, PlaydateAPI *pd) {
   const char *outErr = NULL;
@@ -17,7 +19,17 @@ LCDBitmap *loadImageAtPath(const char *path, PlaydateAPI *pd) {
 Graphics *initialiseGraphics(Game *g) {
   game = g;
   graphics.loadImageAtPath = &loadImageAtPath;
+  graphics.drawPatternRect = &drawPatternRect;
   LCDBitmap *img = loadImageAtPath("images/background", g->pd);
   g->pd->graphics->drawBitmap(img, 0, 0, kBitmapUnflipped);
   return &graphics;
+}
+
+void drawPatternRect(PlaydateAPI *pd, int x, int y, int width, int height,
+                     LCDPattern *lcdPattern) {
+  LCDBitmap *lcdBitmap =
+      pd->graphics->newBitmap(width, height, (LCDColor)lcdPattern);
+  pd->graphics->drawBitmap(lcdBitmap, x, y, kBitmapUnflipped);
+  pd->graphics->drawBitmap(lcdBitmap, x, y, kBitmapUnflipped);
+  pd->graphics->freeBitmap(lcdBitmap);
 }

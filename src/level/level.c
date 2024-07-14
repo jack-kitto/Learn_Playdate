@@ -73,4 +73,36 @@ void printLevel() {
   }
 }
 
-void drawLevel() { game->print("Drawing level."); }
+LCDPattern *tileTypeToPattern(TileType tileType) {
+  switch (tileType) {
+  case START:
+    return game->patterns->white;
+  case END:
+    return game->patterns->white;
+  case BLOCK:
+    return game->patterns->grey62_5;
+  case AIR:
+    return game->patterns->grey12_5;
+  case UNKNOWN:
+    return game->patterns->white;
+  default:
+    return game->patterns->black;
+  }
+}
+
+void drawLevel() {
+  game->print("Drawing level.");
+  game->pd->graphics->clear(kColorWhite);
+  int startX = 0;
+  int startY = 0;
+  for (int i = startY; i < LEVEL_HEIGHT; i++) {
+    for (int j = startX; j < LEVEL_WIDTH; j++) {
+      // Coordinate currentWorldPosition = {.x = j, .y = i};
+      // Coordinate screenCoordinate =
+      //     worldPositionToScreenCoodinates(currentWorldPosition, &camera);
+      // drawPatternRect(pd, screenCoordinate.x * TILE_SIZE,
+      //                 screenCoordinate.y * TILE_SIZE, TILE_SIZE, TILE_SIZE,
+      //                 tileTypeToPattern(level->tilemap[i][j]));
+    }
+  }
+}

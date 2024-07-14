@@ -32,6 +32,7 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.level = initialiseLevel(&game);
   game.camera = initialiseCamera(&game);
   game.player = initialisePlayer(&game);
+  game.patterns = initialisePatterns();
 
   game.setupGame();
   return &game;
