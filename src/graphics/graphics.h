@@ -5,7 +5,7 @@
 typedef struct Graphics Graphics;
 struct Graphics {
   LCDBitmap *(*loadImageAtPath)(const char *path, PlaydateAPI *pd);
-  void (*drawPatternRect)(PlaydateAPI *pd, int x, int y, int width, int height,
+  void (*drawPatternRect)(int x, int y, int width, int height,
                           LCDPattern *lcdPattern);
 };
 
