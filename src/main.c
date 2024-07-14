@@ -1,6 +1,6 @@
 // main.c
 
-#include "game.h"
+#include "game/game.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,8 +21,8 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg)
                         fontpath, err);
     // Note: If you set an update callback in the kEventInit handler, the system
     // assumes the game is pure C and doesn't run any Lua code in the game
-    pd->system->setUpdateCallback(update, pd);
-    setup(pd);
+    Game *game = initialiseGame(pd);
+    // setup(pd);
   }
   return 0;
 }
