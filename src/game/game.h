@@ -2,7 +2,6 @@
 
 #ifndef game_h
 #define game_h
-
 #include "pd_api.h"
 #include "src/camera/camera.h"
 #include "src/graphics/graphics.h"

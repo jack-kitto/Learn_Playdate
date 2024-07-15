@@ -1,4 +1,5 @@
 #include "level.h"
+#include "src/defs.h"
 #include "src/game/game.h"
 
 static Game *game;
@@ -8,6 +9,7 @@ TileType charToTileType(char tile);
 char tileTypeToChar(TileType tileType);
 void printLevel(void);
 void drawLevel(void);
+Coord_i getStartPosition(void);
 
 Level *initialiseLevel(Game *g) {
   level.charToTileType = &charToTileType;
@@ -15,6 +17,7 @@ Level *initialiseLevel(Game *g) {
   level.printLevel = &printLevel;
   level.drawLevel = &drawLevel;
   level.tilemap = tilemap;
+  level.getStartPosition = &getStartPosition;
   game = g;
   return &level;
 }
@@ -24,7 +27,7 @@ char tilemap[LEVEL_HEIGHT][LEVEL_WIDTH] = {
     "#..........................................................#",
     "#.#################################################........#",
     "#....................................................#######",
-    "#.S..............................................##........#",
+    "#................................S...............##........#",
     "##########.##############..####################......#######",
     "#E.......#................#..................#..####..#....#",
     "####...####################..................##......##....#",
@@ -76,33 +79,68 @@ void printLevel() {
 LCDPattern *tileTypeToPattern(TileType tileType) {
   switch (tileType) {
   case START:
-    return game->patterns->white;
-  case END:
-    return game->patterns->white;
-  case BLOCK:
-    return game->patterns->grey62_5;
-  case AIR:
     return game->patterns->grey12_5;
+  case END:
+    return game->patterns->grey12_5;
+  case BLOCK:
+    return game->patterns->black;
+  case AIR:
+    return game->patterns->grey25;
   case UNKNOWN:
     return game->patterns->white;
   default:
-    return game->patterns->black;
+    return game->patterns->white;
   }
 }
+
+// Subtract camera position from object position to get the object position
+// relative to the camera The camera is the screen #define LEVEL_WIDTH 60
+// #define LEVEL_HEIGHT 10
+// #define TILE_SIZE 8
 
 void drawLevel() {
   game->print("Drawing level.");
   game->pd->graphics->clear(kColorWhite);
-  int startX = 0;
-  int startY = 0;
-  for (int i = startY; i < LEVEL_HEIGHT; i++) {
-    for (int j = startX; j < LEVEL_WIDTH; j++) {
-      // Coordinate currentWorldPosition = {.x = j, .y = i};
-      // Coordinate screenCoordinate =
-      //     worldPositionToScreenCoodinates(currentWorldPosition, &camera);
-      // drawPatternRect(pd, screenCoordinate.x * TILE_SIZE,
-      //                 screenCoordinate.y * TILE_SIZE, TILE_SIZE, TILE_SIZE,
-      //                 tileTypeToPattern(level->tilemap[i][j]));
+  float startX = game->camera->worldX; // Camera x
+  float startY = game->camera->worldY;
+  float cameraWidthInWorld = game->camera->worldWidth;
+  float cameraHeightInWorld = game->camera->worldHeight;
+  float tileHeight = SCREEN_HEIGHT / cameraHeightInWorld;
+  float tileWidth = SCREEN_WIDTH / cameraWidthInWorld;
+  int stopY = startY + cameraHeightInWorld;
+  int stopX = startX + cameraWidthInWorld;
+  for (int i = startY; i < stopY; i++) {
+    for (int j = startX; j < stopX; j++) {
+      float x = (j - startX) * tileWidth;
+      float y = (i - startY) * tileHeight;
+      if (i < 0 || j < 0) {
+        game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
+                                        game->patterns->black);
+        continue;
+      }
+      if (i >= LEVEL_HEIGHT || j >= LEVEL_WIDTH) {
+        game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
+                                        game->patterns->black);
+        continue;
+      }
+      TileType tile = charToTileType(game->level->tilemap[i][j]);
+      LCDPattern *pattern = tileTypeToPattern(tile);
+      game->graphics->drawPatternRect(x, y, tileWidth, tileHeight, pattern);
     }
   }
+}
+
+Coord_i getStartPosition(void) {
+  Coord_i start;
+  for (int i = 0; i < LEVEL_HEIGHT; i++) {
+    for (int j = 0; j < LEVEL_WIDTH; j++) {
+      TileType tile = charToTileType(level.tilemap[i][j]);
+      if (tile == START) {
+        start.x = j;
+        start.y = i;
+        return start;
+      }
+    }
+  }
+  return start;
 }

@@ -1,6 +1,6 @@
 // game.c
 #include "game.h"
-#include "pd_api/pd_api_gfx.h"
+#include "src/defs.h"
 #include <stdint.h>
 
 static Game game;
@@ -42,7 +42,11 @@ Game *initialiseGame(PlaydateAPI *pd) {
 void startGame() {
   game.print("Starting game.");
   game.state = ACTIVE;
-  game.level->printLevel();
-  game.pd->graphics->clear(kColorWhite);
-  game.player->drawPlayer();
+  Coord_i start = game.level->getStartPosition();
+  game.camera->worldX = start.x - (int)(game.camera->worldWidth / 2);
+  game.camera->worldY = start.y - (int)(game.camera->worldHeight / 2);
+  game.level->drawLevel();
+  // game.level->printLevel();
+  // game.pd->graphics->clear(kColorWhite);
+  // game.player->drawPlayer();
 }

@@ -1,9 +1,8 @@
 #ifndef LEVEL_H
 
 #define LEVEL_H
-#define LEVEL_WIDTH 60
-#define LEVEL_HEIGHT 10
 
+#include "src/defs.h"
 typedef enum TileType TileType;
 enum TileType { START, END, BLOCK, AIR, UNKNOWN };
 
@@ -14,6 +13,7 @@ struct Level {
   void (*drawLevel)(void);
   TileType (*charToTileType)(char tile);
   char (*tileTypeToChar)(TileType tileType);
+  Coord_i (*getStartPosition)(void);
 };
 
 typedef struct Game Game;

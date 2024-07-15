@@ -7,6 +7,8 @@ struct Camera {
   float worldY;
   int viewPortWidth;
   int viewPortHeight;
+  int worldWidth;
+  int worldHeight;
 };
 
 typedef struct Game Game;
