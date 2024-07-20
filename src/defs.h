@@ -7,14 +7,8 @@
 #define LEVEL_HEIGHT 10
 #define TILE_SIZE 8
 
-typedef struct Coord_i Coord_i;
-struct Coord_i {
-  int x;
-  int y;
-};
-
-typedef struct Coord_f Coord_f;
-struct Coord_f {
+typedef struct Vec2 Vec2;
+struct Vec2 {
   float x;
   float y;
 };

@@ -34,7 +34,6 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.camera = initialiseCamera(&game);
   game.patterns = initialisePatterns();
   game.player = initialisePlayer(&game);
-
   game.setupGame();
   return &game;
 }
@@ -42,9 +41,7 @@ Game *initialiseGame(PlaydateAPI *pd) {
 void startGame() {
   game.print("Starting game.");
   game.state = ACTIVE;
-  Coord_i start = game.level->getStartPosition();
-  game.camera->worldX = start.x - (int)(game.camera->worldWidth / 2);
-  game.camera->worldY = start.y - (int)(game.camera->worldHeight / 2);
+  Vec2 start = game.level->getStartPosition();
   game.level->drawLevel();
   // game.level->printLevel();
   // game.pd->graphics->clear(kColorWhite);

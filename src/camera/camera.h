@@ -1,10 +1,10 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "src/defs.h"
 typedef struct Camera Camera;
 struct Camera {
-  float worldX;
-  float worldY;
+  Vec2 worldPos;
   int viewPortWidth;
   int viewPortHeight;
   int worldWidth;

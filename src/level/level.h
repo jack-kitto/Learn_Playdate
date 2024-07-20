@@ -13,7 +13,7 @@ struct Level {
   void (*drawLevel)(void);
   TileType (*charToTileType)(char tile);
   char (*tileTypeToChar)(TileType tileType);
-  Coord_i (*getStartPosition)(void);
+  Vec2 (*getStartPosition)(void);
 };
 
 typedef struct Game Game;

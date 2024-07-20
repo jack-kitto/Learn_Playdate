@@ -9,7 +9,7 @@ TileType charToTileType(char tile);
 char tileTypeToChar(TileType tileType);
 void printLevel(void);
 void drawLevel(void);
-Coord_i getStartPosition(void);
+Vec2 getStartPosition(void);
 
 Level *initialiseLevel(Game *g) {
   level.charToTileType = &charToTileType;
@@ -101,8 +101,8 @@ LCDPattern *tileTypeToPattern(TileType tileType) {
 void drawLevel() {
   game->print("Drawing level.");
   game->pd->graphics->clear(kColorWhite);
-  float startX = game->camera->worldX; // Camera x
-  float startY = game->camera->worldY;
+  float startX = game->camera->worldPos.x; // Camera x
+  float startY = game->camera->worldPos.y;
   float cameraWidthInWorld = game->camera->worldWidth;
   float cameraHeightInWorld = game->camera->worldHeight;
   float tileHeight = SCREEN_HEIGHT / cameraHeightInWorld;
@@ -130,8 +130,8 @@ void drawLevel() {
   }
 }
 
-Coord_i getStartPosition(void) {
-  Coord_i start;
+Vec2 getStartPosition(void) {
+  Vec2 start;
   for (int i = 0; i < LEVEL_HEIGHT; i++) {
     for (int j = 0; j < LEVEL_WIDTH; j++) {
       TileType tile = charToTileType(level.tilemap[i][j]);

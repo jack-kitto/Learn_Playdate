@@ -1,12 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "src/defs.h"
 typedef struct Player Player;
 struct Player {
-  float worldX;
-  float worldY;
-  float velocityX;
-  float velocityY;
+  Vec2 worldPos;
+  Vec2 vel;
   void (*drawPlayer)(void);
 };
 
