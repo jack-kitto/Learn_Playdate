@@ -1,7 +1,5 @@
 #include "patterns.h"
 
-static Patterns patterns;
-
 LCDPattern grey50 = {
     // Bitmap
     0b10101010,
@@ -199,15 +197,25 @@ LCDPattern black = {
     0b11111111,
 };
 
-Patterns *initialisePatterns() {
-  patterns.grey12_5 = &grey12_5;
-  patterns.grey25 = &grey25;
-  patterns.grey37_5 = &grey37_5;
-  patterns.grey50 = &grey50;
-  patterns.grey62_5 = &grey62_5;
-  patterns.grey75 = &grey75;
-  patterns.grey87_5 = &grey87_5;
-  patterns.white = &white;
-  patterns.black = &black;
-  return &patterns;
-}
+LCDPattern *getPattern(Pattern p) {
+  switch (p) {
+  case PATTERN_GREY12_5:
+    return &grey12_5;
+  case PATTERN_GREY25:
+    return &grey25;
+  case PATTERN_GREY37_5:
+    return &grey37_5;
+  case PATTERN_GREY50:
+    return &grey50;
+  case PATTERN_GREY62_5:
+    return &grey62_5;
+  case PATTERN_GREY75:
+    return &grey75;
+  case PATTERN_GREY87_5:
+    return &grey87_5;
+  case PATTERN_WHITE:
+    return &white;
+  case PATTERN_BLACK:
+    return &black;
+  }
+};

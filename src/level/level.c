@@ -1,6 +1,7 @@
 #include "level.h"
 #include "src/defs.h"
 #include "src/game/game.h"
+#include "src/pattern/patterns.h"
 
 static Game *game;
 static Level level;
@@ -79,17 +80,17 @@ void printLevel() {
 LCDPattern *tileTypeToPattern(TileType tileType) {
   switch (tileType) {
   case START:
-    return game->patterns->grey12_5;
+    return getPattern(PATTERN_GREY12_5);
   case END:
-    return game->patterns->grey12_5;
+    return getPattern(PATTERN_GREY12_5);
   case BLOCK:
-    return game->patterns->black;
+    return getPattern(PATTERN_BLACK);
   case AIR:
-    return game->patterns->grey25;
+    return getPattern(PATTERN_GREY25);
   case UNKNOWN:
-    return game->patterns->white;
+    return getPattern(PATTERN_WHITE);
   default:
-    return game->patterns->white;
+    return getPattern(PATTERN_WHITE);
   }
 }
 
@@ -115,12 +116,12 @@ void drawLevel() {
       float y = (i - startY) * tileHeight;
       if (i < 0 || j < 0) {
         game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
-                                        game->patterns->black);
+                                        getPattern(PATTERN_BLACK));
         continue;
       }
       if (i >= LEVEL_HEIGHT || j >= LEVEL_WIDTH) {
         game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
-                                        game->patterns->black);
+                                        getPattern(PATTERN_BLACK));
         continue;
       }
       TileType tile = charToTileType(game->level->tilemap[i][j]);

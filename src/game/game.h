@@ -7,7 +7,6 @@
 #include "src/graphics/graphics.h"
 #include "src/input/input.h"
 #include "src/level/level.h"
-#include "src/pattern/patterns.h"
 #include "src/player/player.h"
 
 typedef struct Game Game;
@@ -23,7 +22,6 @@ struct Game {
   Level *level;
   Player *player;
   Camera *camera;
-  Patterns *patterns;
 
   int (*update)(void *userdata);
   int (*setupGame)(void);
