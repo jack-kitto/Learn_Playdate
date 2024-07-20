@@ -17,7 +17,6 @@ void drawLevel(void);
 Vec2 getStartPosition(void);
 
 void Level_print(Level *level, PlaydateAPI *pd);
-void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera);
 Vec2 Level_getStart(Level *level);
 Level *Level_update(Level *level);
 
@@ -113,7 +112,18 @@ LCDPattern *tileTypeToPattern(TileType tileType) {
 // #define LEVEL_HEIGHT 10
 // #define TILE_SIZE 8
 
-void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera) {
+int Level_draw(Level *level, PlaydateAPI *pd, Camera *camera) {
+  if (!pd) {
+    return 1;
+  }
+  if (!level) {
+    pd->system->error("Level ptr does not exist");
+    return 2;
+  }
+  if (!camera) {
+    pd->system->error("Camera ptr does not exist");
+    return 3;
+  }
   pd->system->logToConsole("Drawing level");
   pd->graphics->clear(kColorWhite);
   float startX = camera->worldBox.pos.x; // Camera x
@@ -141,6 +151,7 @@ void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera) {
       drawBox(pd, box, tileTypeToPattern(tile));
     }
   }
+  return 0;
 }
 
 Vec2 Level_getStart(Level *level) {

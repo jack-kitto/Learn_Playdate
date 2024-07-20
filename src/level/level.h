@@ -7,10 +7,10 @@
 #include "src/defs.h"
 typedef enum TileType TileType;
 enum TileType { START, END, BLOCK, AIR, UNKNOWN };
-
+typedef enum LEVEL_ERROR LEVEL_ERROR;
 typedef struct Level Level;
 void Level_print(Level *level, PlaydateAPI *pd);
-void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera);
+int Level_draw(Level *level, PlaydateAPI *pd, Camera *camera);
 Vec2 Level_getStart(Level *level);
 Level *Level_new(void);
 Level *Level_update(Level *level);

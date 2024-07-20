@@ -1,49 +1,99 @@
 // game.c
 #include "game.h"
-#include "src/defs.h"
 #include "src/level/level.h"
 #include "src/player/player.h"
 #include <stdint.h>
 
-static Game game;
+struct Game {
+  State state;
+  PlaydateAPI *pd;
+  Level *level;
+  Player *player;
+  Camera *camera;
+};
 
-int update(void *userdata);
-int setupGame(void);
-void startGame(void);
-void print(char *str) { game.pd->system->logToConsole(str); }
+Game *Game_new(PlaydateAPI *pd) {
+  Game *game = malloc(sizeof(Game));
+  game->state = GAME_MENU;
+  game->level = Level_new();
+  game->camera = initialiseCamera(game);
+  game->pd = pd;
+  game->player = Player_new();
+  return game;
+}
 
-int setupGame() {
-  game.pd->system->setUpdateCallback(game.update, game.pd);
-  game.print("Setting Up Game.");
+int Game_setup(Game *g) {
+  if (!g) {
+    return 1;
+  }
+  Level_print(g->level, g->pd);
+  Player_setup(g->player, g->pd);
+  int error = Level_draw(g->level, g->pd, g->camera);
+  if (error) {
+    Game_error(g, "Error occurred drawing level");
+  }
   return 0;
 }
 
-int update(void *userdata) {
-  PlaydateAPI *pd = userdata;
+int Game_update(void *userdata) {
+  Game *g = userdata;
+  if (!g) {
+    return 1;
+  }
+  Game_printState(g);
   return 0;
 }
 
-Game *initialiseGame(PlaydateAPI *pd) {
-  game.print = &print;
-  game.update = &update;
-  game.setupGame = &setupGame;
-  game.pd = pd;
-  game.state = MENU;
-  game.startGame = &startGame;
-  game.input = initialiseInput(&game);
-  game.level = Level_new();
-  game.camera = initialiseCamera(&game);
-  game.player = Player_new();
-  game.setupGame();
-  return &game;
+int Game_delete(Game *game) {
+  if (!game) {
+    return 1;
+  }
+  Level_delete(game->level);
+  Player_delete(game->player);
+  free(game);
+  return 0;
 }
 
-void startGame() {
-  game.print("Starting game.");
-  game.state = ACTIVE;
-  Vec2 start = Level_getStart(game.level);
-  Level_draw(game.level, game.pd, game.camera);
-  // game.level->printLevel();
-  // game.pd->graphics->clear(kColorWhite);
-  // game.player->drawPlayer();
+int Game_printState(Game *g) {
+  if (!g) {
+    return 1;
+  }
+  switch (g->state) {
+  case GAME_MENU:
+    Game_print(g, "Menu");
+    break;
+  case GAME_ACTIVE:
+    Game_print(g, "Active");
+    break;
+  default:
+    Game_print(g, "Unknown");
+    break;
+  }
+  return 0;
+};
+
+int Game_print(Game *game, const char *fmt, ...) {
+  if (!game) {
+    return 1;
+  }
+
+  va_list args;
+  va_start(args, fmt);
+  game->pd->system->logToConsole(fmt, args);
+  va_end(args);
+
+  return 0;
+}
+
+int Game_error(Game *game, const char *fmt, ...) {
+  if (!game) {
+    return 1;
+  }
+
+  va_list args;
+  va_start(args, fmt);
+  game->pd->system->error(fmt, args);
+  va_end(args);
+
+  return 0;
 }

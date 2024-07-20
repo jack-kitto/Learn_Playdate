@@ -23,9 +23,14 @@ Player *Player_new() {
   return player;
 }
 
-Player *Player_update(Player *player, PlaydateAPI *pd);
+void Player_setup(Player *player, PlaydateAPI *pd) {}
+void Player_update(Player *player, PlaydateAPI *pd) {}
 
-void Player_delete(Player *player) { free(player); }
+void Player_delete(Player *player) {
+  if (player) {
+    free(player);
+  }
+}
 
 // void drawPlayer(Player *player, PlaydateAPI *pd) {};
 

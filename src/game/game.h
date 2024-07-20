@@ -2,32 +2,18 @@
 #pragma once
 #ifndef game_h
 #define game_h
-#include "pd_api.h"
 #include "src/camera/camera.h"
 #include "src/graphics/graphics.h"
-#include "src/input/input.h"
-#include "src/level/level.h"
-#include "src/player/player.h"
 
 typedef struct Game Game;
-typedef enum { MENU, ACTIVE } State;
-/*View *view;*/
+typedef enum { GAME_MENU, GAME_ACTIVE } State;
 
-struct Game {
-  State state;
-
-  PlaydateAPI *pd;
-  Input *input;
-  Level *level;
-  Player *player;
-  Camera *camera;
-
-  int (*update)(void *userdata);
-  int (*setupGame)(void);
-  void (*startGame)(void);
-  void (*print)(char *str);
-};
-
-Game *initialiseGame(PlaydateAPI *pd);
+int Game_update(void *userdata);
+Game *Game_new(PlaydateAPI *pd);
+int Game_delete(Game *game);
+int Game_setup(Game *game);
+int Game_printState(Game *game);
+int Game_print(Game *game, const char *fmt, ...);
+int Game_error(Game *game, const char *fmt, ...);
 
 #endif /* game_h */

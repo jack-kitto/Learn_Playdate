@@ -4,8 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "pd_api.h"
+#include <stdlib.h>
+
 const char *fontpath = "/System/Fonts/Asheville-Sans-14-Bold.pft";
 LCDFont *font = NULL;
+Game *game;
 
 #ifdef _WINDLL
 __declspec(dllexport)
@@ -21,8 +25,11 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg)
                         fontpath, err);
     // Note: If you set an update callback in the kEventInit handler, the system
     // assumes the game is pure C and doesn't run any Lua code in the game
-    Game *game = initialiseGame(pd);
-    // setup(pd);
+    game = Game_new(pd);
+    Game_setup(game);
+    pd->system->setUpdateCallback(Game_update, game);
+  } else if (event == kEventTerminate) {
+    Game_delete(game);
   }
   return 0;
 }
