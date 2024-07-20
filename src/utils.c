@@ -39,3 +39,10 @@ Vec2 Vec2_divideScalar(Vec2 a, float scalar) {
   res.y = a.y / scalar;
   return res;
 }
+
+Vec2 Vec2_divide(Vec2 a, Vec2 b) {
+  Vec2 res;
+  res.x = a.x / b.x;
+  res.y = a.y / b.y;
+  return res;
+}
