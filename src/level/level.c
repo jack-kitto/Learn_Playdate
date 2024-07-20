@@ -1,10 +1,14 @@
 #include "level.h"
+#include "src/camera/camera.h"
 #include "src/defs.h"
-#include "src/game/game.h"
+#include "src/graphics/graphics.h"
 #include "src/pattern/patterns.h"
+#include <stdlib.h>
 
-static Game *game;
-static Level level;
+struct Level {
+  char (*tilemap)[LEVEL_WIDTH];
+};
+
 char tilemap[LEVEL_HEIGHT][LEVEL_WIDTH];
 TileType charToTileType(char tile);
 char tileTypeToChar(TileType tileType);
@@ -12,29 +16,34 @@ void printLevel(void);
 void drawLevel(void);
 Vec2 getStartPosition(void);
 
-Level *initialiseLevel(Game *g) {
-  level.charToTileType = &charToTileType;
-  level.tileTypeToChar = &tileTypeToChar;
-  level.printLevel = &printLevel;
-  level.drawLevel = &drawLevel;
-  level.tilemap = tilemap;
-  level.getStartPosition = &getStartPosition;
-  game = g;
-  return &level;
+void Level_print(Level *level, PlaydateAPI *pd);
+void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera);
+Vec2 Level_getStart(Level *level);
+Level *Level_update(Level *level);
+
+Level *Level_new() {
+  Level *level = malloc(sizeof(Level));
+  char tilemap[LEVEL_HEIGHT][LEVEL_WIDTH] = {
+      "############################################################",
+      "#..........................................................#",
+      "#.#################################################........#",
+      "#....................................................#######",
+      "#................................S...............##........#",
+      "##########.##############..####################......#######",
+      "#E.......#................#..................#..####..#....#",
+      "####...####################..................##......##....#",
+      "######............................................##.......#",
+      "############################################################",
+  };
+  level->tilemap = tilemap;
+  return level;
 }
 
-char tilemap[LEVEL_HEIGHT][LEVEL_WIDTH] = {
-    "############################################################",
-    "#..........................................................#",
-    "#.#################################################........#",
-    "#....................................................#######",
-    "#................................S...............##........#",
-    "##########.##############..####################......#######",
-    "#E.......#................#..................#..####..#....#",
-    "####...####################..................##......##....#",
-    "######............................................##.......#",
-    "############################################################",
-};
+void Level_delete(Level *level) {
+  if (level) {
+    free(level);
+  }
+}
 
 TileType charToTileType(char tile) {
   switch (tile) {
@@ -66,14 +75,19 @@ char tileTypeToChar(TileType tileType) {
   };
 }
 
-void printLevel() {
+void Level_print(Level *level, PlaydateAPI *pd) {
+  if (!level) {
+    return;
+  }
+  if (!pd) {
+    return;
+  }
   for (int i = 0; i < LEVEL_HEIGHT; i++) {
     char str[LEVEL_WIDTH + 1];
     for (int j = 0; j < LEVEL_WIDTH; j++) {
-      str[j] = level.tilemap[i][j];
+      str[j] = level->tilemap[i][j];
     }
     str[LEVEL_WIDTH] = '\0';
-    game->print(str);
   }
 }
 
@@ -99,43 +113,41 @@ LCDPattern *tileTypeToPattern(TileType tileType) {
 // #define LEVEL_HEIGHT 10
 // #define TILE_SIZE 8
 
-void drawLevel() {
-  game->print("Drawing level.");
-  game->pd->graphics->clear(kColorWhite);
-  float startX = game->camera->worldBox.pos.x; // Camera x
-  float startY = game->camera->worldBox.pos.y;
-  float cameraWidthInWorld = game->camera->worldBox.length.x;
-  float cameraHeightInWorld = game->camera->worldBox.length.y;
-  float tileHeight = SCREEN_HEIGHT / cameraHeightInWorld;
-  float tileWidth = SCREEN_WIDTH / cameraWidthInWorld;
+void Level_draw(Level *level, PlaydateAPI *pd, Camera *camera) {
+  pd->system->logToConsole("Drawing level");
+  pd->graphics->clear(kColorWhite);
+  float startX = camera->worldBox.pos.x; // Camera x
+  float startY = camera->worldBox.pos.y;
+  float cameraWidthInWorld = camera->worldBox.length.x;
+  float cameraHeightInWorld = camera->worldBox.length.y;
   int stopY = startY + cameraHeightInWorld;
   int stopX = startX + cameraWidthInWorld;
+  Box box;
+  box.length.y = SCREEN_HEIGHT / cameraHeightInWorld;
+  box.length.x = SCREEN_WIDTH / cameraWidthInWorld;
   for (int i = startY; i < stopY; i++) {
     for (int j = startX; j < stopX; j++) {
-      float x = (j - startX) * tileWidth;
-      float y = (i - startY) * tileHeight;
+      box.pos.x = (j - startX) * box.length.x;
+      box.pos.y = (i - startY) * box.length.y;
       if (i < 0 || j < 0) {
-        game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
-                                        getPattern(PATTERN_BLACK));
+        drawBox(pd, box, getPattern(PATTERN_BLACK));
         continue;
       }
       if (i >= LEVEL_HEIGHT || j >= LEVEL_WIDTH) {
-        game->graphics->drawPatternRect(x, y, tileWidth, tileHeight,
-                                        getPattern(PATTERN_BLACK));
+        drawBox(pd, box, getPattern(PATTERN_BLACK));
         continue;
       }
-      TileType tile = charToTileType(game->level->tilemap[i][j]);
-      LCDPattern *pattern = tileTypeToPattern(tile);
-      game->graphics->drawPatternRect(x, y, tileWidth, tileHeight, pattern);
+      TileType tile = charToTileType(level->tilemap[i][j]);
+      drawBox(pd, box, tileTypeToPattern(tile));
     }
   }
 }
 
-Vec2 getStartPosition(void) {
+Vec2 Level_getStart(Level *level) {
   Vec2 start;
   for (int i = 0; i < LEVEL_HEIGHT; i++) {
     for (int j = 0; j < LEVEL_WIDTH; j++) {
-      TileType tile = charToTileType(level.tilemap[i][j]);
+      TileType tile = charToTileType(level->tilemap[i][j]);
       if (tile == START) {
         start.x = j;
         start.y = i;

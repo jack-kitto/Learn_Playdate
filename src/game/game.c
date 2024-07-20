@@ -1,6 +1,7 @@
 // game.c
 #include "game.h"
 #include "src/defs.h"
+#include "src/level/level.h"
 #include "src/player/player.h"
 #include <stdint.h>
 
@@ -30,8 +31,7 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.state = MENU;
   game.startGame = &startGame;
   game.input = initialiseInput(&game);
-  game.graphics = initialiseGraphics(&game);
-  game.level = initialiseLevel(&game);
+  game.level = Level_new();
   game.camera = initialiseCamera(&game);
   game.player = Player_new();
   game.setupGame();
@@ -41,8 +41,8 @@ Game *initialiseGame(PlaydateAPI *pd) {
 void startGame() {
   game.print("Starting game.");
   game.state = ACTIVE;
-  Vec2 start = game.level->getStartPosition();
-  game.level->drawLevel();
+  Vec2 start = Level_getStart(game.level);
+  Level_draw(game.level, game.pd, game.camera);
   // game.level->printLevel();
   // game.pd->graphics->clear(kColorWhite);
   // game.player->drawPlayer();

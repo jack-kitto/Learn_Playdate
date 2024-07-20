@@ -1,5 +1,5 @@
 // game.h
-
+#pragma once
 #ifndef game_h
 #define game_h
 #include "pd_api.h"
@@ -18,7 +18,6 @@ struct Game {
 
   PlaydateAPI *pd;
   Input *input;
-  Graphics *graphics;
   Level *level;
   Player *player;
   Camera *camera;
