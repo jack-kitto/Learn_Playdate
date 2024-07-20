@@ -21,3 +21,19 @@ void drawBox(PlaydateAPI *pd, Box b, LCDPattern *lcdPattern) {
   pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
   pd->graphics->freeBitmap(lcdBitmap);
 }
+
+int drawBoxWorld(PlaydateAPI *pd, Box b, LCDPattern *lcdPattern) {
+  if (!pd) {
+    return 1;
+  }
+  if (!lcdPattern) {
+    return 1;
+  }
+  // TODO: Convert box to world coordinates
+  LCDBitmap *lcdBitmap =
+      pd->graphics->newBitmap(b.length.x, b.length.y, (LCDColor)lcdPattern);
+  pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
+  pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
+  pd->graphics->freeBitmap(lcdBitmap);
+  return 0;
+}
