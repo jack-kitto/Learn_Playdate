@@ -217,5 +217,7 @@ LCDPattern *getPattern(Pattern p) {
     return &white;
   case PATTERN_BLACK:
     return &black;
+  default:
+    return &black;
   }
 };
