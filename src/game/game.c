@@ -1,6 +1,7 @@
 // game.c
 #include "game.h"
 #include "src/defs.h"
+#include "src/player/player.h"
 #include <stdint.h>
 
 static Game game;
@@ -33,7 +34,7 @@ Game *initialiseGame(PlaydateAPI *pd) {
   game.level = initialiseLevel(&game);
   game.camera = initialiseCamera(&game);
   game.patterns = initialisePatterns();
-  game.player = createPlayer(&game);
+  game.player = Player_new();
   game.setupGame();
   return &game;
 }

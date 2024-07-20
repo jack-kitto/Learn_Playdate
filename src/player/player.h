@@ -1,17 +1,15 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "pd_api.h"
 #include "src/defs.h"
 typedef struct Player Player;
-struct Player {
-  Vec2 worldPos;
-  Vec2 vel;
-  void (*drawPlayer)(void);
-  void (*setWorldPos)(Vec2);
-  void (*setWorldX)(float x);
-  void (*setWorldY)(float y);
-};
 
-typedef struct Game Game;
-Player *createPlayer(Game *g);
+Player *Player_new();
+Player *Player_update(Player *player, PlaydateAPI *pd);
+void Player_delete(Player *player);
+void setWorldPos(Player *player, Vec2 p);
+void setWorldX(Player *player, float x);
+void setWorldY(Player *player, float y);
+
 #endif // !PLAYER_H

@@ -1,35 +1,33 @@
 #include "player.h"
+#include "pd_api.h"
 #include "src/defs.h"
-#include "src/game/game.h"
+#include <stdlib.h>
 #define PLAYER_WIDTH 16
 #define PLAYER_HEIGHT 32
 
-static Game *game;
-static Player player;
-void drawPlayer(void);
-void setWorldPos(Vec2 pos) { player.worldPos = pos; };
-void setWorldX(float x) { player.worldPos.x = x; };
-void setWorldY(float y) { player.worldPos.y = y; };
+struct Player {
+  Vec2 worldPos;
+  Vec2 vel;
+};
 
-Player *createPlayer(Game *g) {
+void setWorldPos(Player *player, Vec2 p) { player->worldPos = p; };
+void setWorldX(Player *player, float x) { player->worldPos.x = x; };
+void setWorldY(Player *player, float y) { player->worldPos.y = y; };
+
+Player *Player_new() {
   Vec2 p = {.x = 0, .y = 0};
   Vec2 vel = {.x = 0, .y = 0};
-  player.worldPos = p;
-  player.vel = vel;
-  player.drawPlayer = &drawPlayer;
-  player.setWorldPos = &setWorldPos;
-  player.setWorldX = &setWorldX;
-  player.setWorldY = &setWorldY;
-  game = g;
-  return &player;
+  Player *player = malloc(sizeof(Player));
+  player->worldPos = p;
+  player->vel = vel;
+  return player;
 }
 
-void drawPlayer() {
-  int x = 10;
-  int y = 10;
-  game->graphics->drawPatternRect(x, y, PLAYER_WIDTH, PLAYER_HEIGHT,
-                                  game->patterns->grey50);
-}
+Player *Player_update(Player *player, PlaydateAPI *pd);
+
+void Player_delete(Player *player) { free(player); }
+
+// void drawPlayer(Player *player, PlaydateAPI *pd) {};
 
 // TODO: Setup player starting position
 //   game.player->worldX = start.x - (int)(game.camera->worldWidth / 2);
