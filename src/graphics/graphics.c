@@ -1,5 +1,5 @@
 #include "src/graphics/graphics.h"
-#include "src/defs.h"
+#include "src/camera/camera.h"
 
 void drawPatternRect(int x, int y, int width, int height,
                      LCDPattern *lcdPattern);
@@ -22,14 +22,15 @@ void drawBox(PlaydateAPI *pd, Box b, LCDPattern *lcdPattern) {
   pd->graphics->freeBitmap(lcdBitmap);
 }
 
-int drawBoxWorld(PlaydateAPI *pd, Box b, LCDPattern *lcdPattern) {
-  if (!pd) {
+int drawBoxWorld(PlaydateAPI *pd, Camera *camera, Box b,
+                 LCDPattern *lcdPattern) {
+  if (!pd || !lcdPattern) {
     return 1;
   }
-  if (!lcdPattern) {
-    return 1;
+  int error = Camera_WorldToScreenBox(camera, &b);
+  if (error) {
+    return error;
   }
-  // TODO: Convert box to world coordinates
   LCDBitmap *lcdBitmap =
       pd->graphics->newBitmap(b.length.x, b.length.y, (LCDColor)lcdPattern);
   pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
