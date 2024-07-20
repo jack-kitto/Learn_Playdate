@@ -7,12 +7,12 @@
 typedef struct Player Player;
 
 Player *Player_new(void);
-void Player_update(Player *player, PlaydateAPI *pd);
-void Player_setup(Player *player, PlaydateAPI *pd);
-void Player_delete(Player *player);
+int Player_update(Player *player, PlaydateAPI *pd);
+int Player_setup(Player *player, PlaydateAPI *pd);
+int Player_delete(Player *player);
 Vec2 Player_getWorldPos(Player *player);
-void Player_setWorldPos(Player *player, Vec2 p);
-void Player_setWorldX(Player *player, float x);
-void Player_setWorldY(Player *player, float y);
+int Player_setWorldPos(Player *player, Vec2 p);
+int Player_setWorldX(Player *player, float x);
+int Player_setWorldY(Player *player, float y);
 
 #endif // !PLAYER_H

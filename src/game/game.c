@@ -40,6 +40,10 @@ int Game_update(void *userdata) {
   if (!g) {
     return 1;
   }
+  int playerError = Player_update(g->player, g->pd);
+  if (playerError) {
+    Game_error(g, "Error in Player_update");
+  }
   return 0;
 }
 
