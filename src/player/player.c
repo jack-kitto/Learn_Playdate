@@ -7,13 +7,19 @@
 static Game *game;
 static Player player;
 void drawPlayer(void);
+void setWorldPos(Vec2 pos) { player.worldPos = pos; };
+void setWorldX(float x) { player.worldPos.x = x; };
+void setWorldY(float y) { player.worldPos.y = y; };
 
-Player *initialisePlayer(Game *g) {
+Player *createPlayer(Game *g) {
   Vec2 p = {.x = 0, .y = 0};
   Vec2 vel = {.x = 0, .y = 0};
   player.worldPos = p;
   player.vel = vel;
   player.drawPlayer = &drawPlayer;
+  player.setWorldPos = &setWorldPos;
+  player.setWorldX = &setWorldX;
+  player.setWorldY = &setWorldY;
   game = g;
   return &player;
 }

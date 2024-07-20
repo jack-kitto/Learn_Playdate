@@ -7,8 +7,11 @@ struct Player {
   Vec2 worldPos;
   Vec2 vel;
   void (*drawPlayer)(void);
+  void (*setWorldPos)(Vec2);
+  void (*setWorldX)(float x);
+  void (*setWorldY)(float y);
 };
 
 typedef struct Game Game;
-Player *initialisePlayer(Game *g);
+Player *createPlayer(Game *g);
 #endif // !PLAYER_H
