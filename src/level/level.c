@@ -101,10 +101,10 @@ LCDPattern *tileTypeToPattern(TileType tileType) {
 void drawLevel() {
   game->print("Drawing level.");
   game->pd->graphics->clear(kColorWhite);
-  float startX = game->camera->worldPos.x; // Camera x
-  float startY = game->camera->worldPos.y;
-  float cameraWidthInWorld = game->camera->worldWidth;
-  float cameraHeightInWorld = game->camera->worldHeight;
+  float startX = game->camera->worldBox.pos.x; // Camera x
+  float startY = game->camera->worldBox.pos.y;
+  float cameraWidthInWorld = game->camera->worldBox.length.x;
+  float cameraHeightInWorld = game->camera->worldBox.length.y;
   float tileHeight = SCREEN_HEIGHT / cameraHeightInWorld;
   float tileWidth = SCREEN_WIDTH / cameraWidthInWorld;
   int stopY = startY + cameraHeightInWorld;

@@ -13,4 +13,9 @@ struct Vec2 {
   float y;
 };
 
+typedef struct Box Box;
+struct Box {
+  Vec2 pos;
+  Vec2 length;
+};
 #endif // !DEFS_H
