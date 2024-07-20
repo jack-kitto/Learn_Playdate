@@ -10,9 +10,10 @@ struct Player {
   Vec2 vel;
 };
 
-void setWorldPos(Player *player, Vec2 p) { player->worldPos = p; };
-void setWorldX(Player *player, float x) { player->worldPos.x = x; };
-void setWorldY(Player *player, float y) { player->worldPos.y = y; };
+Vec2 Player_getWorldPos(Player *player) { return player->worldPos; }
+void Player_setWorldPos(Player *player, Vec2 p) { player->worldPos = p; };
+void Player_setWorldX(Player *player, float x) { player->worldPos.x = x; };
+void Player_setWorldY(Player *player, float y) { player->worldPos.y = y; };
 
 Player *Player_new() {
   Vec2 p = {.x = 0, .y = 0};

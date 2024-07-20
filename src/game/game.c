@@ -16,7 +16,7 @@ Game *Game_new(PlaydateAPI *pd) {
   Game *game = malloc(sizeof(Game));
   game->state = GAME_MENU;
   game->level = Level_new();
-  game->camera = initialiseCamera(game);
+  game->camera = Camera_new();
   game->pd = pd;
   game->player = Player_new();
   return game;
@@ -40,7 +40,6 @@ int Game_update(void *userdata) {
   if (!g) {
     return 1;
   }
-  Game_printState(g);
   return 0;
 }
 

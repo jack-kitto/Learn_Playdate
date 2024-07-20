@@ -29,6 +29,7 @@ SRC = 	\
         src/camera/camera.c \
         src/player/player.c \
         src/pattern/patterns.c \
+        src/utils.c \
 
 # List all user directories here
 UINCDIR = 

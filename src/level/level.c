@@ -126,10 +126,12 @@ int Level_draw(Level *level, PlaydateAPI *pd, Camera *camera) {
   }
   pd->system->logToConsole("Drawing level");
   pd->graphics->clear(kColorWhite);
-  float startX = camera->worldBox.pos.x; // Camera x
-  float startY = camera->worldBox.pos.y;
-  float cameraWidthInWorld = camera->worldBox.length.x;
-  float cameraHeightInWorld = camera->worldBox.length.y;
+  // float startX = camera->world.pos.x; // Camera x
+  // float startY = camera->world.pos.y;
+  float startX = Camera_getWorld(camera).pos.x;
+  float startY = Camera_getWorld(camera).pos.y;
+  float cameraWidthInWorld = Camera_getWorld(camera).length.x;
+  float cameraHeightInWorld = Camera_getWorld(camera).length.y;
   int stopY = startY + cameraHeightInWorld;
   int stopX = startX + cameraWidthInWorld;
   Box box;
