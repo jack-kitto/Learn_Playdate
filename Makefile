@@ -24,7 +24,6 @@ VPATH += src
 SRC = 	\
         src/main.c \
         src/game/game.c \
-        src/input/input.c \
         src/graphics/graphics.c \
         src/level/level.c \
         src/camera/camera.c \
