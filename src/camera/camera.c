@@ -1,5 +1,8 @@
 #include "camera.h"
+#include "pd_api.h"
 #include "src/defs.h"
+#include "src/game/game.h"
+#include "src/level/level.h"
 #include "src/player/player.h"
 #include <stdlib.h>
 
@@ -14,22 +17,43 @@ Box Camera_getScreen(Camera *self) { return self->screen; }
 
 Camera *Camera_new() {
   Camera *self = malloc(sizeof(Camera));
-  self->world.pos.x = 0;
-  self->world.pos.y = 0;
-  self->world.length.y = 4;
-  self->world.length.x = 4;
-  self->screen.pos.x = 0;
-  self->screen.pos.y = 0;
-  self->screen.length.y = 240;
-  self->screen.length.x = 400;
-  self->scale = Vec2_divide(self->world.length, self->screen.length);
+
+  // Vec2 level = Vec2_divide(Camera_getScreen(camera).length,
+  // self->tileSize_px); Vec2 cameraPos = Camera_getWorld(camera).pos;
+
+  self->world.pos = Vec2_new(0, 0);
+  self->world.length = Vec2_new(0, 0);
+  self->screen.length = Vec2_new(400, 240);
+  self->screen.pos = Vec2_new(0, 0);
+  self->scale = Vec2_divide(self->screen.length, self->world.length);
   return self;
 }
 
-int Camera_setup(Camera *self) {
-  if (!self) {
+int followPlayer_(Camera *self, Player *player) {
+  if (!player || !self) {
     return 1;
   }
+  // Vec2 playerPos = Player_getWorldPos(player);
+  // Vec2 halfCamera = Vec2_divideScalar(self->world.length, 2);
+  // self->world.pos = Vec2_subtract(playerPos, halfCamera);
+  self->world.pos = Player_getWorldPos(player);
+  return 0;
+}
+
+int Camera_setup(Camera *self, Game *game) {
+  if (!self || !game) {
+    return 1;
+  }
+  Level *level = Game_getLevel(game);
+  if (!level) {
+    return 1;
+  }
+  PlaydateAPI *pd = Game_getPd(game);
+  Vec2 tileSize_px = Level_getTileSize(level);
+  self->world.length = Vec2_divide(self->screen.length, tileSize_px);
+  pd->system->logToConsole("Camera length");
+  Vec2_print(pd, self->world.length);
+  followPlayer_(self, Game_getPlayer(game));
   return 0;
 }
 
@@ -37,9 +61,7 @@ int Camera_update(Camera *self, Player *player) {
   if (!self || !player) {
     return 1;
   }
-  Vec2 playerPos = Player_getWorldPos(player);
-  Vec2 halfCamera = Vec2_divideScalar(self->world.length, 2);
-  self->world.pos = Vec2_subtract(playerPos, halfCamera);
+  followPlayer_(self, player);
   return 0;
 }
 

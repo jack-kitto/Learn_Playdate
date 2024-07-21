@@ -21,6 +21,19 @@ Vec2 Vec2_multiply(Vec2 a, Vec2 b) {
   return result;
 }
 
+Vec2 Vec2_subtractScalar(Vec2 a, float scalar) {
+  Vec2 result;
+  result.x = a.x - scalar;
+  result.y = a.y - scalar;
+  return result;
+}
+Vec2 Vec2_addScalar(Vec2 a, float scalar) {
+  Vec2 result;
+  result.x = a.x + scalar;
+  result.y = a.y + scalar;
+  return result;
+}
+
 Vec2 Vec2_multiplyScalar(Vec2 a, float scalar) {
   Vec2 result;
   result.x = a.x * scalar;
@@ -45,4 +58,31 @@ Vec2 Vec2_divide(Vec2 a, Vec2 b) {
   res.x = a.x / b.x;
   res.y = a.y / b.y;
   return res;
+}
+
+Vec2 Vec2_new(float x, float y) {
+  Vec2 res;
+  res.x = x;
+  res.y = y;
+  return res;
+}
+
+Box Box_new(float x, float y, float w, float h) {
+  Box res;
+  res.pos.x = x;
+  res.pos.y = y;
+  res.length.x = w;
+  res.length.y = h;
+  return res;
+}
+
+void Vec2_print(PlaydateAPI *pd, Vec2 v) {
+  pd->system->logToConsole("Vec2(x: %.2f, y: %.2f)\n", v.x, v.y);
+}
+
+void Box_print(PlaydateAPI *pd, Box b) {
+  pd->system->logToConsole("Box.pos:");
+  Vec2_print(pd, b.pos);
+  pd->system->logToConsole("Box.length:");
+  Vec2_print(pd, b.length);
 }
