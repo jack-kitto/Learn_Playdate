@@ -1,5 +1,6 @@
 // game.c
 #include "game.h"
+#include "src/camera/camera.h"
 #include "src/level/level.h"
 #include "src/player/player.h"
 #include <stdint.h>
@@ -15,8 +16,8 @@ struct Game {
 Game *Game_new(PlaydateAPI *pd) {
   Game *game = malloc(sizeof(Game));
   game->state = GAME_MENU;
-  game->level = Level_new();
   game->camera = Camera_new();
+  game->level = Level_new();
   game->pd = pd;
   game->player = Player_new();
   return game;
@@ -26,12 +27,9 @@ int Game_setup(Game *g) {
   if (!g) {
     return 1;
   }
-  Level_print(g->level, g->pd);
   Player_setup(g->player, g->pd);
-  int error = Level_draw(g->level, g->pd, g->camera);
-  if (error) {
-    Game_error(g, "Error occurred drawing level");
-  }
+  Camera_setup(g->camera, g);
+  Level_setup(g->level, g->pd);
   return 0;
 }
 
@@ -40,8 +38,17 @@ int Game_update(void *userdata) {
   if (!g) {
     return 1;
   }
-  int playerError = Player_update(g->player, g->pd);
-  if (playerError) {
+  int error;
+  error = Camera_update(g->camera, g->player);
+  if (error) {
+    Game_error(g, "Error in Camera_update");
+  }
+  error = Level_update(g->level, g->pd, g->camera);
+  if (error) {
+    Game_error(g, "Error in Level_update");
+  }
+  error = Player_update(g->player, g->pd);
+  if (error) {
     Game_error(g, "Error in Player_update");
   }
   return 0;
@@ -100,3 +107,7 @@ int Game_error(Game *game, const char *fmt, ...) {
 
   return 0;
 }
+
+Level *Game_getLevel(Game *game) { return game->level; }
+Player *Game_getPlayer(Game *game) { return game->player; }
+PlaydateAPI *Game_getPd(Game *game) { return game->pd; }

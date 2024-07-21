@@ -1,8 +1,9 @@
 // game.h
 #pragma once
+#include "pd_api.h"
+#include "src/level/level.h"
 #ifndef game_h
 #define game_h
-#include "src/camera/camera.h"
 #include "src/graphics/graphics.h"
 
 typedef struct Game Game;
@@ -15,5 +16,8 @@ int Game_setup(Game *game);
 int Game_printState(Game *game);
 int Game_print(Game *game, const char *fmt, ...);
 int Game_error(Game *game, const char *fmt, ...);
+Level *Game_getLevel(Game *game);
+Player *Game_getPlayer(Game *game);
+PlaydateAPI *Game_getPd(Game *game);
 
 #endif /* game_h */
