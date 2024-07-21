@@ -1,10 +1,8 @@
 // main.c
 
 #include "game/game.h"
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "pd_api.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 const char *fontpath = "/System/Fonts/Asheville-Sans-14-Bold.pft";
@@ -17,8 +15,10 @@ __declspec(dllexport)
 int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg)
 {
   (void)arg; // arg is currently only used for event = kEventKeyPressed
-  if (event == kEventInit) {
-    const char *err;
+  const char *err;
+  switch (event) {
+  case kEventInit:
+    pd->display->setRefreshRate(20);
     font = pd->graphics->loadFont(fontpath, &err);
     if (font == NULL)
       pd->system->error("%s:%i Couldn't load font %s: %s", __FILE__, __LINE__,
@@ -28,8 +28,34 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg)
     game = Game_new(pd);
     Game_setup(game);
     pd->system->setUpdateCallback(Game_update, game);
-  } else if (event == kEventTerminate) {
+    break;
+  case kEventInitLua:
+    pd->system->logToConsole("Event: kEventInitLua");
+    break;
+  case kEventKeyPressed:
+    pd->system->logToConsole("Event: kEventKeyPressed");
+    break;
+  case kEventKeyReleased:
+    pd->system->logToConsole("Event: kEventKeyReleased");
+    break;
+  case kEventLock:
+    pd->system->logToConsole("Event: kEventLock");
+    break;
+  case kEventUnlock:
+    pd->system->logToConsole("Event: kEventUnlock");
+    break;
+  case kEventPause:
+    pd->system->logToConsole("Event: kEventPause");
+    break;
+  case kEventResume:
+    pd->system->logToConsole("Event: kEventResume");
+    break;
+  case kEventLowPower:
+    pd->system->logToConsole("Event: kEventLowPower");
+    break;
+  case kEventTerminate:
     Game_delete(game);
-  }
+    break;
+  };
   return 0;
 }
