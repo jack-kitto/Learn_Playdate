@@ -86,3 +86,20 @@ void Box_print(PlaydateAPI *pd, Box b) {
   pd->system->logToConsole("Box.length:");
   Vec2_print(pd, b.length);
 }
+
+Vec2 Box_getTL(Box b) { return b.pos; }
+Vec2 Box_getTR(Box b) {
+  Vec2 v;
+  v.x = b.pos.x + b.length.x;
+  v.y = b.pos.y;
+  return v;
+}
+Vec2 Box_getBR(Box b) { return Vec2_add(b.length, b.pos); }
+Vec2 Box_getBL(Box b) {
+  Vec2 v;
+  v.x = b.pos.x;
+  v.y = b.pos.y + b.length.y;
+  return v;
+}
+
+float Vec2_length(Vec2 v) { return sqrtf(v.x * v.x + v.y * v.y); }

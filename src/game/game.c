@@ -56,7 +56,7 @@ int Game_update(void *userdata) {
   if (error) {
     Game_error(g, "Error in Level_update");
   }
-  error = Player_update(g->player, g->pd, g->camera, g->dt_seconds);
+  error = Player_update(g->player, g->pd, g->camera, g->dt_seconds, g->level);
   if (error) {
     Game_error(g, "Error in Player_update");
   }

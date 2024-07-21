@@ -19,6 +19,7 @@ int Level_delete(Level *level);
 int Level_setup(Level *self, PlaydateAPI *pd);
 LCDPattern *tileTypeToPattern(TileType tileType);
 Vec2 Level_getTileSize(Level *level);
+TileType Level_getTileAt(Level *self, Vec2 position, PlaydateAPI *pd);
 
 TileType charToTileType(char tile);
 char tileTypeToChar(TileType tileType);

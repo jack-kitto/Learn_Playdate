@@ -15,13 +15,14 @@ struct Player {
   Box hitBox;
 };
 int draw_(Player *self, Camera *camera, PlaydateAPI *pd);
-int move_(Player *self, PlaydateAPI *pd, float dt_seconds);
+int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level);
+void moveClosest_(Player *self, Box b, Level *level, PlaydateAPI *pd);
 Vec2 getVelocity_(PlaydateAPI *pd);
 
 Player *Player_new() {
   Player *player = malloc(sizeof(Player));
   player->hitBox.pos = Vec2_new(0, 0);
-  player->hitBox.length = Vec2_new(1, 1);
+  player->hitBox.length = Vec2_new(0.8, 0.8);
   player->vel = Vec2_new(0, 0);
   return player;
 }
@@ -35,11 +36,11 @@ int Player_setup(Player *player, PlaydateAPI *pd, Level *level) {
 }
 
 int Player_update(Player *self, PlaydateAPI *pd, Camera *camera,
-                  float dt_seconds) {
+                  float dt_seconds, Level *level) {
   if (!self || !pd) {
     return 1;
   }
-  move_(self, pd, dt_seconds);
+  move_(self, pd, dt_seconds, level);
   draw_(self, camera, pd);
   return 0;
 }
@@ -112,14 +113,59 @@ Vec2 getVelocity_(PlaydateAPI *pd) {
   return v;
 }
 
-int move_(Player *self, PlaydateAPI *pd, float dt_seconds) {
-  if (!self || !pd) {
+int canMoveTo(Player *self, Box b, Level *level, PlaydateAPI *pd) {
+  int res = 1;
+  Vec2 tl = Box_getTL(b);
+  Vec2 bl = Box_getBL(b);
+  Vec2 br = Box_getBR(b);
+  Vec2 tr = Box_getTR(b);
+  if (Level_getTileAt(level, tl, pd) == BLOCK) {
+    res = 0;
+  }
+  if (Level_getTileAt(level, bl, pd) == BLOCK) {
+    res = 0;
+  }
+  if (Level_getTileAt(level, br, pd) == BLOCK) {
+    res = 0;
+  }
+  if (Level_getTileAt(level, tr, pd) == BLOCK) {
+    res = 0;
+  }
+  return res;
+}
+
+void moveClosest_(Player *self, Box b, Level *level, PlaydateAPI *pd) {
+  // Vec2 originalPos = self->hitBox.pos;
+  // Vec2 targetPos = b.pos;
+  // Vec2 direction = Vec2_subtract(targetPos, originalPos);
+  // float step = 0.1f; // Adjust step size for finer collision checking
+  // Vec2 stepVector = Vec2_multiplyScalar(direction, step);
+  // Box checkBox = self->hitBox;
+  //
+  // while (Vec2_length(direction) > 0.0f) {
+  //   checkBox.pos = Vec2_add(checkBox.pos, stepVector);
+  //   if (canMoveTo(self, checkBox, level, pd)) {
+  //     self->hitBox.pos = checkBox.pos;
+  //     break;
+  //   }
+  //   direction = Vec2_subtract(targetPos, checkBox.pos);
+  // }
+}
+
+int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level) {
+  if (!self || !pd || !level) {
     return 1;
   }
   // reset player velocity so that the player doesn't accelerate;
-  pd->system->logToConsole("dt: %f", dt_seconds);
   self->vel = Vec2_new(0, 0);
-  Vec2 vel = getVelocity_(pd);
-  self->hitBox.pos = Vec2_add(self->hitBox.pos, vel);
+  Vec2 vel = getVelocity_(pd), newPos = Vec2_add(self->hitBox.pos, vel);
+  Box newPlayerBox;
+  newPlayerBox.pos = newPos;
+  newPlayerBox.length = self->hitBox.length;
+  if (canMoveTo(self, newPlayerBox, level, pd)) {
+    self->hitBox = newPlayerBox;
+  } else {
+    moveClosest_(self, newPlayerBox, level, pd);
+  }
   return 0;
 }

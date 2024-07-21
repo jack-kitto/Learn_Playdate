@@ -9,7 +9,8 @@ typedef struct Level Level;
 typedef struct Camera Camera;
 
 Player *Player_new(void);
-int Player_update(Player *self, PlaydateAPI *pd, Camera *camera, float dt);
+int Player_update(Player *self, PlaydateAPI *pd, Camera *camera,
+                  float dt_seconds, Level *level);
 int Player_setup(Player *player, PlaydateAPI *pd, Level *level);
 int Player_delete(Player *player);
 Vec2 Player_getWorldPos(Player *player);

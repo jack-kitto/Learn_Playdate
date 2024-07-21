@@ -34,4 +34,9 @@ Vec2 Box_getCenter(Box box);
 Vec2 Vec2_new(float x, float y);
 void Vec2_print(PlaydateAPI *pd, Vec2 v);
 Box Box_new(float x, float y, float w, float h);
+Vec2 Box_getTL(Box b);
+Vec2 Box_getTR(Box b);
+Vec2 Box_getBR(Box b);
+Vec2 Box_getBL(Box b);
+float Vec2_length(Vec2 v);
 #endif // !DEFS_H
