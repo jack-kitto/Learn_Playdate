@@ -18,7 +18,6 @@ void drawBox(PlaydateAPI *pd, Box b, LCDPattern *lcdPattern) {
   LCDBitmap *lcdBitmap =
       pd->graphics->newBitmap(b.length.x, b.length.y, (LCDColor)lcdPattern);
   pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
-  pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
   pd->graphics->freeBitmap(lcdBitmap);
 }
 
@@ -33,7 +32,6 @@ int drawBoxWorld(PlaydateAPI *pd, Camera *camera, Box b,
   }
   LCDBitmap *lcdBitmap =
       pd->graphics->newBitmap(b.length.x, b.length.y, (LCDColor)lcdPattern);
-  pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
   pd->graphics->drawBitmap(lcdBitmap, b.pos.x, b.pos.y, kBitmapUnflipped);
   pd->graphics->freeBitmap(lcdBitmap);
   return 0;
