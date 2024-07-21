@@ -20,6 +20,7 @@ int Level_setup(Level *self, PlaydateAPI *pd);
 LCDPattern *tileTypeToPattern(TileType tileType);
 Vec2 Level_getTileSize(Level *level);
 TileType Level_getTileAt(Level *self, Vec2 position, PlaydateAPI *pd);
+int Level_isCollision(Level *self, PlaydateAPI *pd, Vec2 v);
 
 TileType charToTileType(char tile);
 char tileTypeToChar(TileType tileType);

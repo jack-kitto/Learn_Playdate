@@ -258,3 +258,10 @@ Vec2 Level_getStart(Level *level) {
 }
 
 Vec2 Level_getTileSize(Level *level) { return level->tileSize_px; }
+
+int Level_isCollision(Level *self, PlaydateAPI *pd, Vec2 v) {
+  if (Level_getTileAt(self, v, pd) == BLOCK) {
+    return 1;
+  }
+  return 0;
+}
