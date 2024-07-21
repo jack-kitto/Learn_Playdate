@@ -9,6 +9,12 @@
 #include <stdlib.h>
 #define PLAYER_WIDTH 16
 #define PLAYER_HEIGHT 32
+enum PlayerState {
+  PLAYER_JUMPING = 1 << 0,   // 0001
+  PLAYER_FALLING = 1 << 1,   // 0010
+  PLAYER_MOVE_LEFT = 1 << 2, // 0100
+  PLAYER_MOVE_RIGHT = 1 << 3 // 1000
+};
 
 struct Player {
   Vec2 vel;
@@ -16,12 +22,7 @@ struct Player {
   float jumpSpeed;
   Vec2 gravity;
   Box hitBox;
-  enum state {
-    PLAYER_JUMPING,
-    PLAYER_FALLING,
-    PLAYER_MOVE_LEFT,
-    PLAYER_MOVE_RIGHT
-  } playerState;
+  unsigned int playerState; // Use an integer to store the bitmask
 };
 int draw_(Player *self, Camera *camera, PlaydateAPI *pd);
 int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level);
@@ -29,6 +30,10 @@ void handleCollision_(Player *self, Box b, Level *level, PlaydateAPI *pd,
                       Vec2 vel);
 void setDirections_(int *left, int *up, int *right, int *down, Vec2 vel);
 Vec2 getVelocity_(Player *self, PlaydateAPI *pd);
+int getNewPlayerState_(PlaydateAPI *pd);
+void Player_addState(unsigned int *playerState, enum PlayerState state);
+void Player_removeState(unsigned int *playerState, enum PlayerState state);
+unsigned int Player_getState(unsigned int *playerState, enum PlayerState state);
 
 Player *Player_new() {
   Player *player = malloc(sizeof(Player));
@@ -146,6 +151,7 @@ int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level) {
     return 1;
   }
   // reset player velocity so that the player doesn't accelerate;
+  int newPlayerState = getNewPlayerState_(pd);
   self->vel = Vec2_new(0, 0);
   self->vel = getVelocity_(self, pd);
   self->vel = Vec2_add(self->vel, self->gravity);
@@ -196,4 +202,34 @@ int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level) {
 
   self->hitBox.pos = newPos;
   return 0;
+}
+
+int getNewPlayerState_(PlaydateAPI *pd) {
+  if (!pd) {
+    return 1;
+  }
+  Vec2 v = Vec2_new(0, 0);
+  PDButtons current, pushed, released;
+  pd->system->getButtonState(&current, &pushed, &released);
+  unsigned int newPlayerState;
+  if (current & kButtonLeft) {
+    Player_addState(&newPlayerState, PLAYER_MOVE_LEFT);
+  } else if (current & kButtonRight) {
+    Player_addState(&newPlayerState, PLAYER_MOVE_RIGHT);
+  }
+  if (current & kButtonA) {
+    Player_addState(&newPlayerState, PLAYER_JUMPING);
+  }
+  return newPlayerState;
+}
+
+void Player_addState(unsigned int *playerState, enum PlayerState state) {
+  *playerState |= state;
+}
+void Player_removeState(unsigned int *playerState, enum PlayerState state) {
+  *playerState &= ~state;
+}
+unsigned int Player_getState(unsigned int *playerState,
+                             enum PlayerState state) {
+  return *playerState & state;
 }
