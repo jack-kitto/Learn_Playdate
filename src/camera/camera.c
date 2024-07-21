@@ -11,33 +11,16 @@ struct Camera {
   Box screen;
   Vec2 scale;
 };
-
-Box Camera_getWorld(Camera *self) { return self->world; }
-Box Camera_getScreen(Camera *self) { return self->screen; }
+int followPlayer_(Camera *self, Player *player);
 
 Camera *Camera_new() {
   Camera *self = malloc(sizeof(Camera));
-
-  // Vec2 level = Vec2_divide(Camera_getScreen(camera).length,
-  // self->tileSize_px); Vec2 cameraPos = Camera_getWorld(camera).pos;
-
   self->world.pos = Vec2_new(0, 0);
   self->world.length = Vec2_new(0, 0);
   self->screen.length = Vec2_new(400, 240);
   self->screen.pos = Vec2_new(0, 0);
-  self->scale = Vec2_divide(self->screen.length, self->world.length);
+  self->scale = Vec2_new(0, 0);
   return self;
-}
-
-int followPlayer_(Camera *self, Player *player) {
-  if (!player || !self) {
-    return 1;
-  }
-  // Vec2 playerPos = Player_getWorldPos(player);
-  // Vec2 halfCamera = Vec2_divideScalar(self->world.length, 2);
-  // self->world.pos = Vec2_subtract(playerPos, halfCamera);
-  self->world.pos = Player_getWorldPos(player);
-  return 0;
 }
 
 int Camera_setup(Camera *self, Game *game) {
@@ -51,6 +34,7 @@ int Camera_setup(Camera *self, Game *game) {
   PlaydateAPI *pd = Game_getPd(game);
   Vec2 tileSize_px = Level_getTileSize(level);
   self->world.length = Vec2_divide(self->screen.length, tileSize_px);
+  self->scale = Vec2_divide(self->screen.length, self->world.length);
   pd->system->logToConsole("Camera length");
   Vec2_print(pd, self->world.length);
   followPlayer_(self, Game_getPlayer(game));
@@ -70,6 +54,18 @@ int Camera_delete(Camera *self) {
     return 1;
   }
   free(self);
+  return 0;
+}
+
+int followPlayer_(Camera *self, Player *player) {
+  if (!player || !self) {
+    return 1;
+  }
+  Vec2 playerPos = Player_getWorldPos(player);
+  Vec2 halfCamera = Vec2_divideScalar(self->world.length, 2);
+  self->world.pos =
+      Vec2_add(Vec2_subtract(playerPos, halfCamera),
+               Vec2_divideScalar(Player_getHitBox(player).length, 2));
   return 0;
 }
 
@@ -102,3 +98,7 @@ int Camera_WorldToScreenCoord(Camera *self, Vec2 *p) {
   *p = res;
   return 0;
 }
+
+Vec2 Camera_getScale(Camera *self) { return self->scale; }
+Box Camera_getWorld(Camera *self) { return self->world; }
+Box Camera_getScreen(Camera *self) { return self->screen; }

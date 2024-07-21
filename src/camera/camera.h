@@ -11,6 +11,7 @@ int Camera_setup(Camera *self, Game *game);
 int Camera_update(Camera *self, Player *player);
 int Camera_delete(Camera *self);
 Box Camera_getWorld(Camera *self);
+Vec2 Camera_getScale(Camera *self);
 Box Camera_getScreen(Camera *self);
 int Camera_WorldToScreenBox(Camera *self, Box *b);
 int Camera_WorldToScreenCoord(Camera *self, Vec2 *p);
