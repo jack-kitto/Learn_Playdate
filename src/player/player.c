@@ -16,6 +16,12 @@ struct Player {
   float jumpSpeed;
   Vec2 gravity;
   Box hitBox;
+  enum state {
+    PLAYER_JUMPING,
+    PLAYER_FALLING,
+    PLAYER_MOVE_LEFT,
+    PLAYER_MOVE_RIGHT
+  } playerState;
 };
 int draw_(Player *self, Camera *camera, PlaydateAPI *pd);
 int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level);
