@@ -197,7 +197,7 @@ LCDPattern black = {
     0b11111111,
 };
 
-LCDPattern *getPattern(Pattern p) {
+LCDPattern *Pattern_new(Pattern p) {
   switch (p) {
   case PATTERN_GREY12_5:
     return &grey12_5;

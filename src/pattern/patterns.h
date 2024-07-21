@@ -16,6 +16,6 @@ typedef enum Pattern {
   PATTERN_BLACK,
 } Pattern;
 
-LCDPattern *getPattern(Pattern p);
+LCDPattern *Pattern_new(Pattern p);
 
 #endif // PATTERNS_H
