@@ -1,5 +1,6 @@
 // game.c
 #include "game.h"
+#include "pd_api.h"
 #include "src/camera/camera.h"
 #include "src/level/level.h"
 #include "src/player/player.h"
@@ -11,7 +12,9 @@ struct Game {
   Level *level;
   Player *player;
   Camera *camera;
+  float dt_seconds;
 };
+int updateDt_(Game *self);
 
 Game *Game_new(PlaydateAPI *pd) {
   Game *game = malloc(sizeof(Game));
@@ -20,6 +23,7 @@ Game *Game_new(PlaydateAPI *pd) {
   game->level = Level_new();
   game->pd = pd;
   game->player = Player_new();
+  game->dt_seconds = 0;
   return game;
 }
 
@@ -39,6 +43,11 @@ int Game_update(void *userdata) {
     return 1;
   }
   int error;
+  error = updateDt_(g);
+  if (error) {
+    Game_error(g, "Error updating the delta time");
+  }
+
   error = Camera_update(g->camera, g->player);
   if (error) {
     Game_error(g, "Error in Camera_update");
@@ -47,7 +56,7 @@ int Game_update(void *userdata) {
   if (error) {
     Game_error(g, "Error in Level_update");
   }
-  error = Player_update(g->player, g->pd, g->camera);
+  error = Player_update(g->player, g->pd, g->camera, g->dt_seconds);
   if (error) {
     Game_error(g, "Error in Player_update");
   }
@@ -111,3 +120,14 @@ int Game_error(Game *game, const char *fmt, ...) {
 Level *Game_getLevel(Game *game) { return game->level; }
 Player *Game_getPlayer(Game *game) { return game->player; }
 PlaydateAPI *Game_getPd(Game *game) { return game->pd; }
+int updateDt_(Game *self) {
+  if (!self) {
+    return 1;
+  }
+  float dt_seconds = self->pd->system->getElapsedTime();
+  self->pd->system->resetElapsedTime();
+  self->dt_seconds = dt_seconds;
+  return 0;
+}
+
+float Game_getDt(Game *self) { return self->dt_seconds; };

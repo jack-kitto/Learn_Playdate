@@ -19,5 +19,6 @@ int Game_error(Game *game, const char *fmt, ...);
 Level *Game_getLevel(Game *game);
 Player *Game_getPlayer(Game *game);
 PlaydateAPI *Game_getPd(Game *game);
+float Game_getDt(Game *self);
 
 #endif /* game_h */
