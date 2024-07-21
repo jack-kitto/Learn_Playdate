@@ -1,5 +1,6 @@
-name=Hello World C
+name=Playground
 author=Jack Kitto
 description=A project for learning the playdate the C API
-bundleID=com.app.learncapi
+bundleID=com.app.playground
 imagePath=
+version=0.0.5
