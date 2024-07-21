@@ -207,7 +207,8 @@ int Level_update(Level *self, PlaydateAPI *pd, Camera *camera) {
   if (!pd || !self || !camera) {
     return 1;
   }
-  // pd->graphics->clear(kColorWhite);
+  // clear to prevent shadows
+  pd->graphics->clear(kColorWhite);
   Vec2 tileSize = self->tileSize_px;
   Box cameraBox = Camera_getWorld(camera);
   // set cameraBox.length to the bottom right corner of the world that the
