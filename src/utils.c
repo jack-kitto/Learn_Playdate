@@ -102,6 +102,14 @@ Vec2 Box_getBL(Box b) {
   return v;
 }
 
+Vec2i Vec2i_new(int x, int y) {
+  Vec2i v;
+  v.x = x;
+  v.y = y;
+  return v;
+}
+Vec2i Vec2_toVec2i(Vec2 v) { return Vec2i_new((int)v.x, (int)v.y); }
+
 float Vec2_length(Vec2 v) { return sqrtf(v.x * v.x + v.y * v.y); }
 
 int Vec2_N(Vec2 v) {

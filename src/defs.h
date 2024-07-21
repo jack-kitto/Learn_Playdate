@@ -9,6 +9,12 @@
 #define LEVEL_HEIGHT 16
 #define TILE_SIZE 8
 
+typedef struct Vec2i Vec2i;
+struct Vec2i {
+  int x;
+  int y;
+};
+
 typedef struct Vec2 Vec2;
 struct Vec2 {
   float x;
@@ -49,4 +55,6 @@ int Vec2_E(Vec2 v);
 int Vec2_N(Vec2 v);
 Vec2 Vec2_withoutY(Vec2 v);
 Vec2 Vec2_withoutX(Vec2 v);
+Vec2i Vec2i_new(int x, int y);
+Vec2i Vec2_toInt(Vec2 v);
 #endif // !DEFS_H
