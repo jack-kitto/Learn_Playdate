@@ -27,7 +27,7 @@ int Game_setup(Game *g) {
   if (!g) {
     return 1;
   }
-  Player_setup(g->player, g->pd);
+  Player_setup(g->player, g->pd, g->level);
   Camera_setup(g->camera, g);
   Level_setup(g->level, g->pd);
   return 0;
@@ -47,7 +47,7 @@ int Game_update(void *userdata) {
   if (error) {
     Game_error(g, "Error in Level_update");
   }
-  error = Player_update(g->player, g->pd);
+  error = Player_update(g->player, g->pd, g->camera);
   if (error) {
     Game_error(g, "Error in Player_update");
   }
