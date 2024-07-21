@@ -60,6 +60,7 @@ int Game_update(void *userdata) {
   if (error) {
     Game_error(g, "Error in Player_update");
   }
+  g->pd->graphics->display();
   return 0;
 }
 
