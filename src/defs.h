@@ -39,4 +39,14 @@ Vec2 Box_getTR(Box b);
 Vec2 Box_getBR(Box b);
 Vec2 Box_getBL(Box b);
 float Vec2_length(Vec2 v);
+int Vec2_NW(Vec2 v);
+int Vec2_SW(Vec2 v);
+int Vec2_SE(Vec2 v);
+int Vec2_NE(Vec2 v);
+int Vec2_W(Vec2 v);
+int Vec2_S(Vec2 v);
+int Vec2_E(Vec2 v);
+int Vec2_N(Vec2 v);
+Vec2 Vec2_withoutY(Vec2 v);
+Vec2 Vec2_withoutX(Vec2 v);
 #endif // !DEFS_H

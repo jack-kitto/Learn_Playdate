@@ -103,3 +103,62 @@ Vec2 Box_getBL(Box b) {
 }
 
 float Vec2_length(Vec2 v) { return sqrtf(v.x * v.x + v.y * v.y); }
+
+int Vec2_N(Vec2 v) {
+  if (v.y < 0 && v.x == 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_E(Vec2 v) {
+  if (v.y == 0 && v.x > 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_S(Vec2 v) {
+  if (v.y > 0 && v.x == 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_W(Vec2 v) {
+  if (v.y == 0 && v.x < 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_NE(Vec2 v) {
+  if (v.y < 0 && v.x > 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_SE(Vec2 v) {
+  if (v.y > 0 && v.x > 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_SW(Vec2 v) {
+  if (v.y > 0 && v.x < 0) {
+    return 1;
+  }
+  return 0;
+}
+
+int Vec2_NW(Vec2 v) {
+  if (v.y < 0 && v.x < 0) {
+    return 1;
+  }
+  return 0;
+}
+
+Vec2 Vec2_withoutY(Vec2 v) { return Vec2_new(v.x, 0); }
+Vec2 Vec2_withoutX(Vec2 v) { return Vec2_new(0, v.y); }

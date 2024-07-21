@@ -16,13 +16,15 @@ struct Player {
 };
 int draw_(Player *self, Camera *camera, PlaydateAPI *pd);
 int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level);
-void moveClosest_(Player *self, Box b, Level *level, PlaydateAPI *pd);
+void handleCollision_(Player *self, Box b, Level *level, PlaydateAPI *pd,
+                      Vec2 vel);
+void setDirections_(int *left, int *up, int *right, int *down, Vec2 vel);
 Vec2 getVelocity_(PlaydateAPI *pd);
 
 Player *Player_new() {
   Player *player = malloc(sizeof(Player));
   player->hitBox.pos = Vec2_new(0, 0);
-  player->hitBox.length = Vec2_new(0.8, 0.8);
+  player->hitBox.length = Vec2_new(0.99, 0.99);
   player->vel = Vec2_new(0, 0);
   return player;
 }
@@ -134,38 +136,102 @@ int canMoveTo(Player *self, Box b, Level *level, PlaydateAPI *pd) {
   return res;
 }
 
-void moveClosest_(Player *self, Box b, Level *level, PlaydateAPI *pd) {
-  // Vec2 originalPos = self->hitBox.pos;
-  // Vec2 targetPos = b.pos;
-  // Vec2 direction = Vec2_subtract(targetPos, originalPos);
-  // float step = 0.1f; // Adjust step size for finer collision checking
-  // Vec2 stepVector = Vec2_multiplyScalar(direction, step);
-  // Box checkBox = self->hitBox;
-  //
-  // while (Vec2_length(direction) > 0.0f) {
-  //   checkBox.pos = Vec2_add(checkBox.pos, stepVector);
-  //   if (canMoveTo(self, checkBox, level, pd)) {
-  //     self->hitBox.pos = checkBox.pos;
-  //     break;
-  //   }
-  //   direction = Vec2_subtract(targetPos, checkBox.pos);
-  // }
+void setDirections_(int *left, int *up, int *right, int *down, Vec2 vel) {
+  if (vel.y > 0) {
+    *down = 1;
+  }
+  if (vel.y < 0) {
+    *up = 1;
+  }
+  if (vel.x < 0) {
+    *left = 1;
+  }
+  if (vel.x > 0) {
+    *right = 1;
+  }
 }
 
+void handleCollision_(Player *self, Box b, Level *level, PlaydateAPI *pd,
+                      Vec2 vel) {
+  pd->system->logToConsole("Player position");
+  Vec2_print(pd, self->hitBox.pos);
+  pd->system->logToConsole("New Player position");
+  Vec2_print(pd, b.pos);
+  int left = 0, right = 0, up = 0, down = 0;
+  setDirections_(&left, &up, &right, &down, vel);
+  if (Vec2_NE(vel) || Vec2_NW(vel)) {
+    Box temp = self->hitBox;
+    Vec2 newVelWithoutY = Vec2_withoutY(vel);
+    Vec2 newPosWithoutY = Vec2_add(self->hitBox.pos, newVelWithoutY);
+    Box newBoxWithoutY = self->hitBox;
+    newBoxWithoutY.pos = newPosWithoutY;
+    Vec2 newVelWithoutX = Vec2_withoutX(vel);
+    Vec2 newPosWithoutX = Vec2_add(self->hitBox.pos, newVelWithoutX);
+    Box newBoxWithoutX = self->hitBox;
+    newBoxWithoutX.pos = newPosWithoutX;
+    if (canMoveTo(self, newBoxWithoutY, level, pd)) {
+      b = newBoxWithoutY;
+      b.pos.y = (int)b.pos.y;
+    } else if (canMoveTo(self, newBoxWithoutX, level, pd)) {
+      b = newBoxWithoutX;
+      b.pos.y = (int)b.pos.y + 1;
+    } else {
+      b = temp;
+    }
+  }
+  if (Vec2_SE(vel) || Vec2_SW(vel)) {
+    Box temp = self->hitBox;
+    Vec2 newVelWithoutY = Vec2_withoutY(vel);
+    Vec2 newPosWithoutY = Vec2_add(self->hitBox.pos, newVelWithoutY);
+    Box newBoxWithoutY = self->hitBox;
+    newBoxWithoutY.pos = newPosWithoutY;
+    Vec2 newVelWithoutX = Vec2_withoutX(vel);
+    Vec2 newPosWithoutX = Vec2_add(self->hitBox.pos, newVelWithoutX);
+    Box newBoxWithoutX = self->hitBox;
+    newBoxWithoutX.pos = newPosWithoutX;
+    if (canMoveTo(self, newBoxWithoutY, level, pd)) {
+      b = newBoxWithoutY;
+      b.pos.y = (int)b.pos.y;
+    } else if (canMoveTo(self, newBoxWithoutX, level, pd)) {
+      b = newBoxWithoutX;
+      b.pos.y = (int)b.pos.y + 1;
+    } else {
+      b = temp;
+    }
+  }
+  if (Vec2_S(vel)) {
+    // Move the player up to the top edge of the block below
+    b.pos.y = (int)b.pos.y;
+  }
+  if (Vec2_N(vel)) {
+    // Move the player down to the bottom edge of the block above
+    b.pos.y = (int)b.pos.y + 1;
+  }
+  if (Vec2_W(vel)) {
+    // Move the player right to the right edge of the block on the left
+    b.pos.x = (int)b.pos.x + 1;
+  }
+  if (Vec2_E(vel)) {
+    // Move the player left to the left edge of the block on the right
+    b.pos.x = (int)b.pos.x;
+  }
+  self->hitBox = b;
+}
 int move_(Player *self, PlaydateAPI *pd, float dt_seconds, Level *level) {
   if (!self || !pd || !level) {
     return 1;
   }
   // reset player velocity so that the player doesn't accelerate;
   self->vel = Vec2_new(0, 0);
-  Vec2 vel = getVelocity_(pd), newPos = Vec2_add(self->hitBox.pos, vel);
+  Vec2 vel = getVelocity_(pd);
+  Vec2 newPos = Vec2_add(self->hitBox.pos, vel);
   Box newPlayerBox;
   newPlayerBox.pos = newPos;
   newPlayerBox.length = self->hitBox.length;
   if (canMoveTo(self, newPlayerBox, level, pd)) {
     self->hitBox = newPlayerBox;
   } else {
-    moveClosest_(self, newPlayerBox, level, pd);
+    handleCollision_(self, newPlayerBox, level, pd, vel);
   }
   return 0;
 }
